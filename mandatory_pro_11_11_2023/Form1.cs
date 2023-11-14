@@ -136,19 +136,11 @@ namespace mandatory_pro_11_11_2023
             PointF origin = new PointF(e.X, e.Y);
             if (draw && shape != 11)
             {
-                List<PointF> points = placeShape(loadPoints(select_shape(shape)), origin);
-                //PointF center = getCenter(points);
-                graphics.DrawLines(pen, points.ToArray());
-                //for (int i = 0; i < points.Count - 1; i++)
-                //{
-                //    graphics.DrawLine(pen, points[i], points[i + 1]);
-                //}
-
+                drawShape(shape, origin);
             }
             else if (draw && shape == 11)
             {
                 //Prints text
-
                 graphics.DrawString(text, Font, pen.Brush, origin);
             }
             pictureBox1.Refresh();
@@ -169,6 +161,9 @@ namespace mandatory_pro_11_11_2023
                 PointF eLocation = e.Location;
                 graphics.DrawEllipse(eraser, eLocation.X, eLocation.Y, 10, 10);
                 pictureBox1.Refresh();
+
+            } else if (draw==true && shape != 0 && shape != 11)
+            {
 
             }
         }
@@ -319,7 +314,7 @@ namespace mandatory_pro_11_11_2023
         }
 
         // The origin is the point where the mouse is clicked.
-        private List<PointF> placeShape(List<PointF> points, PointF origin)
+        private List<PointF> translateShape(List<PointF> points, PointF origin)
         {
 
             List<PointF> translated = new List<PointF>();
@@ -334,6 +329,12 @@ namespace mandatory_pro_11_11_2023
             }
             
             return translated;
+        }
+
+        private void drawShape(int shape, PointF origin)
+        {
+            List<PointF> points = translateShape(loadPoints(select_shape(shape)), origin);
+            graphics.DrawLines(pen, points.ToArray());
         }
 
         #endregion
