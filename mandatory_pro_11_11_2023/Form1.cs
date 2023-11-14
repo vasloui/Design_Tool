@@ -132,10 +132,10 @@ namespace mandatory_pro_11_11_2023
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
             erase = false;
-            PointF clicked = new PointF(e.X, e.Y);
+            PointF origin = new PointF(e.X, e.Y);
             if (draw && shape != 11)
             {
-                List<PointF> points = placeShape(loadPoints(select_shape(shape)), clicked);
+                List<PointF> points = placeShape(loadPoints(select_shape(shape)), origin);
                 //PointF center = getCenter(points);
                 graphics.DrawLines(pen, points.ToArray());
                 //for (int i = 0; i < points.Count - 1; i++)
@@ -148,7 +148,7 @@ namespace mandatory_pro_11_11_2023
             {
                 //Prints text
 
-                graphics.DrawString(text, Font, pen.Brush, clicked);
+                graphics.DrawString(text, Font, pen.Brush, origin);
             }
             pictureBox1.Refresh();
             timer1.Enabled = false;
@@ -237,13 +237,6 @@ namespace mandatory_pro_11_11_2023
             return tool;
         }
 
-        //private void earse(PointF start, PointF stop)
-        //{
-        //    float width = Math.Abs(stop.X - start.X);
-        //    float height = Math.Abs(stop.Y - start.Y);
-        //    RectangleF rect = new RectangleF(start.X, start.Y, width, height);  
-        //    graphics.DrawEllipse(eraser, rect);
-        //}
 
         private void clearAll()
         {
@@ -315,19 +308,22 @@ namespace mandatory_pro_11_11_2023
             return new PointF(x, y);
         }
 
-        
-
-        private List<PointF> placeShape(List<PointF> points, PointF center)
+        // The origin is the point where the mouse is clicked.
+        private List<PointF> placeShape(List<PointF> points, PointF origin)
         {
-            List<PointF> temp = new List<PointF>();
+
+            List<PointF> translated = new List<PointF>();
+            PointF center = getCenter(points);
+            float translationX= center.X - origin.X;
+            float translationY = center.Y - origin.Y;
+
+            // Applies the translation to each point.
             foreach (PointF point in points)
             {
-                temp.Add(new PointF(point.X - center.X, point.Y - center.Y));
+                translated.Add(new PointF(point.X - translationX, point.Y - translationY));
             }
-            points.Clear();
-            points = temp;
-
-            return points;
+            
+            return translated;
         }
 
         #endregion
