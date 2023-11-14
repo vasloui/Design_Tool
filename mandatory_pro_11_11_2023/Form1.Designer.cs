@@ -85,70 +85,70 @@
             // crossToolStripMenuItem
             // 
             this.crossToolStripMenuItem.Name = "crossToolStripMenuItem";
-            this.crossToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
+            this.crossToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.crossToolStripMenuItem.Text = "Cross";
             this.crossToolStripMenuItem.Click += new System.EventHandler(this.crossToolStripMenuItem_Click);
             // 
             // diamondToolStripMenuItem
             // 
             this.diamondToolStripMenuItem.Name = "diamondToolStripMenuItem";
-            this.diamondToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
+            this.diamondToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.diamondToolStripMenuItem.Text = "Diamond";
             this.diamondToolStripMenuItem.Click += new System.EventHandler(this.diamondToolStripMenuItem_Click);
             // 
             // isoscelesToolStripMenuItem
             // 
             this.isoscelesToolStripMenuItem.Name = "isoscelesToolStripMenuItem";
-            this.isoscelesToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
+            this.isoscelesToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.isoscelesToolStripMenuItem.Text = "Isosceles";
             this.isoscelesToolStripMenuItem.Click += new System.EventHandler(this.isoscelesToolStripMenuItem_Click);
             // 
             // kiteToolStripMenuItem
             // 
             this.kiteToolStripMenuItem.Name = "kiteToolStripMenuItem";
-            this.kiteToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
+            this.kiteToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.kiteToolStripMenuItem.Text = "Kite";
             this.kiteToolStripMenuItem.Click += new System.EventHandler(this.kiteToolStripMenuItem_Click);
             // 
             // parallelogramToolStripMenuItem
             // 
             this.parallelogramToolStripMenuItem.Name = "parallelogramToolStripMenuItem";
-            this.parallelogramToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
+            this.parallelogramToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.parallelogramToolStripMenuItem.Text = "Parallelogram";
             this.parallelogramToolStripMenuItem.Click += new System.EventHandler(this.parallelogramToolStripMenuItem_Click);
             // 
             // rectangleToolStripMenuItem
             // 
             this.rectangleToolStripMenuItem.Name = "rectangleToolStripMenuItem";
-            this.rectangleToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
+            this.rectangleToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.rectangleToolStripMenuItem.Text = "Rectangle";
             this.rectangleToolStripMenuItem.Click += new System.EventHandler(this.rectangleToolStripMenuItem_Click);
             // 
             // rightAngleToolStripMenuItem
             // 
             this.rightAngleToolStripMenuItem.Name = "rightAngleToolStripMenuItem";
-            this.rightAngleToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
+            this.rightAngleToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.rightAngleToolStripMenuItem.Text = "Right Angle";
             this.rightAngleToolStripMenuItem.Click += new System.EventHandler(this.rightAngleToolStripMenuItem_Click);
             // 
             // starToolStripMenuItem
             // 
             this.starToolStripMenuItem.Name = "starToolStripMenuItem";
-            this.starToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
-            this.starToolStripMenuItem.Text = "Star";
-            this.starToolStripMenuItem.Click += new System.EventHandler(this.starToolStripMenuItem_Click);
+            this.starToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.starToolStripMenuItem.Text = "Arrow";
+            this.starToolStripMenuItem.Click += new System.EventHandler(this.arrowToolStripMenuItem_Click);
             // 
             // trapeziumToolStripMenuItem
             // 
             this.trapeziumToolStripMenuItem.Name = "trapeziumToolStripMenuItem";
-            this.trapeziumToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
+            this.trapeziumToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.trapeziumToolStripMenuItem.Text = "Trapezium";
             this.trapeziumToolStripMenuItem.Click += new System.EventHandler(this.trapeziumToolStripMenuItem_Click);
             // 
             // octagonToolStripMenuItem
             // 
             this.octagonToolStripMenuItem.Name = "octagonToolStripMenuItem";
-            this.octagonToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
+            this.octagonToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.octagonToolStripMenuItem.Text = "Octagon";
             this.octagonToolStripMenuItem.Click += new System.EventHandler(this.octagonToolStripMenuItem_Click);
             // 
@@ -173,9 +173,10 @@
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.White;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 103);
+            this.pictureBox1.Location = new System.Drawing.Point(0, 103);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(973, 397);
+            this.pictureBox1.Size = new System.Drawing.Size(997, 400);
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);

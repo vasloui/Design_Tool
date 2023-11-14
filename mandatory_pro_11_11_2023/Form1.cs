@@ -41,6 +41,7 @@ namespace mandatory_pro_11_11_2023
             pictureBox1.Image = bitmap;
             draw = false;
             erase = false;
+            //timer1.Enabled = true;
         }
         #endregion
 
@@ -104,7 +105,7 @@ namespace mandatory_pro_11_11_2023
             chooseColor();
         }
 
-        private void starToolStripMenuItem_Click(object sender, EventArgs e)
+        private void arrowToolStripMenuItem_Click(object sender, EventArgs e)
         {
             shape = 8;
             chooseColor();
@@ -179,7 +180,16 @@ namespace mandatory_pro_11_11_2023
         // Eraser Timer
         private void timer1_Tick(object sender, EventArgs e)
         {
-           
+            //if (
+            //    (pictureBox1.Width != this.Width) &&
+            //    (pictureBox1.Height != this.Height)
+            //)
+            //{
+            //    pictureBox1.Width = Form1.ActiveForm.Width;
+            //    pictureBox1.Height = Form1.ActiveForm.Height;
+            //    this.bitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            //    this.graphics = Graphics.FromImage(this.bitmap);
+            //}
         }
 
         #endregion
@@ -270,7 +280,7 @@ namespace mandatory_pro_11_11_2023
                     json_Name = "right_angle";
                     break;
                 case 8:
-                    json_Name = "star";
+                    json_Name = "arrow";
                     break;
                 case 9:
                     json_Name = "trapezium";
