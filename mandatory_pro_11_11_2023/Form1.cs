@@ -26,6 +26,7 @@ namespace mandatory_pro_11_11_2023
         bool erase;
         bool preview;
         PointF origin;
+        List<List<PointF>> drawn_shapes = new List<List<PointF>>();
         
 
         #region Initializers
@@ -155,9 +156,8 @@ namespace mandatory_pro_11_11_2023
                 drawShape(this.graphics, p, this.shape, this.origin);
                 pictureBox1.Refresh();
                 drawShape(this.graphics, p2, this.shape, this.origin);
-                pictureBox1.Refresh();
-                
-            }
+                redrawAllShapes();
+             }
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
@@ -169,10 +169,8 @@ namespace mandatory_pro_11_11_2023
 
             if (draw && shape != 11)
             {
-                drawShape(this.graphics, this.pen, shape, this.origin);
-                //pictureBox1.Image.Save("mypic.png", ImageFormat.Png);
-                pictureBox1.Image.Save("canvas.png", ImageFormat.Png);
-
+                
+                this.drawn_shapes.Add(drawShape(this.graphics, this.pen, shape, this.origin));
 
             }
             else if (draw && shape == 11)
@@ -249,11 +247,6 @@ namespace mandatory_pro_11_11_2023
             if (!(colorDialog1.ShowDialog() == DialogResult.Cancel))
             {
                 tool = new SolidBrush(colorDialog1.Color);
-
-                //var color = new Color();
-                //color = colorDialog1.Color;
-                //brush = color;
-                //Brush brush = new SolidBrush(colorDialog1.Color);
             }
             return tool;
         }
@@ -262,6 +255,7 @@ namespace mandatory_pro_11_11_2023
         private void clearAll()
         {
             graphics.Clear(pictureBox1.BackColor);
+            this.drawn_shapes.Clear();
         }
 
         private String select_shape(int shape)
@@ -347,10 +341,20 @@ namespace mandatory_pro_11_11_2023
             return translated;
         }
 
-        private void drawShape(Graphics graphics, Pen pen, int shape, PointF origin)
+        private List<PointF> drawShape(Graphics graphics, Pen pen, int shape, PointF origin)
         {
             List<PointF> points = translateShape(loadPoints(select_shape(shape)), origin);
             graphics.DrawLines(pen, points.ToArray());
+            return points;
+        }
+
+        private void redrawAllShapes()
+        {
+            graphics.Clear(pictureBox1.BackColor);
+            foreach (List<PointF> shape in this.drawn_shapes)
+            {
+               graphics.DrawLines(pen, shape.ToArray());
+            }
         }
 
         #endregion
