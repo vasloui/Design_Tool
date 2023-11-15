@@ -26,25 +26,63 @@ namespace mandatory_pro_11_11_2023
         bool erase;
         bool preview;
         PointF origin;
-        
+        List<Object> history = new List<Object>();
+
+        #region Structs
+
+        #region Shape
         private struct Shape
         {
             public List<PointF> points;
             public Color color;
+            public Pen pen;
+            public Graphics graphics;
+
+            public void redraw()
+            {
+                Pen p = new Pen(color, this.pen.Width);
+                graphics.DrawLines(p, points.ToArray());
+            }
         }
+        #endregion
 
-        List<Shape> drawn_shapes = new List<Shape>();
-
+        #region Text
         private struct Text_
         {
             public String text;
             public Font font;
             public Brush brush;
             public PointF point;
+            public Graphics graphics;
+
+            public void redraw()
+            {
+                graphics.DrawString(text, font, brush, point);
+            }
+        }
+        #endregion
+
+        #region Eraser
+        private struct Eraser
+        {
+            public Pen pen;
+            public PointF[] points;
+            public Graphics graphics;
+
+            public void redraw()
+            {
+                if (points.Length > 1)
+                {
+                    graphics.DrawCurve(pen, points);
+                }
+            }
         }
 
-        List<Text_> placed_text = new List<Text_>();
+        List<PointF> eraserPrev = new List<PointF>();
+        #endregion
 
+
+        #endregion
 
         #region Initializers
         public Form1()
@@ -75,7 +113,6 @@ namespace mandatory_pro_11_11_2023
         private void eraserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             draw = false;
-            //erase = !erase;
         }
 
         #endregion
@@ -154,15 +191,18 @@ namespace mandatory_pro_11_11_2023
         {
             erase = !draw;
             preview = true;
-
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             if (erase)
             {
-                PointF eLocation = e.Location;
-                graphics.DrawEllipse(eraser, eLocation.X, eLocation.Y, 10, 10);
+                this.origin = e.Location;
+                this.eraserPrev.Add(origin);
+                if (eraserPrev.Count > 1)
+                {
+                    graphics.DrawCurve(eraser, eraserPrev.ToArray());
+                }
                 pictureBox1.Refresh();
             }
             else if (draw == true && preview == true && shape != 0 && shape != 11)
@@ -171,8 +211,8 @@ namespace mandatory_pro_11_11_2023
                 Pen p = new Pen(Color.Gray, 2);
                 drawShape(this.graphics, p, this.shape, this.origin);
                 pictureBox1.Refresh();
-                redrawAll();
-             }
+                reDrawAllFromList();
+            }
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
@@ -180,17 +220,27 @@ namespace mandatory_pro_11_11_2023
             erase = false;
             preview = false;
 
+            if (draw == false)
+            {
+                Eraser eraser = new Eraser();
+                eraser.pen = this.eraser;
+                eraser.points = this.eraserPrev.ToArray();
+                eraser.graphics = this.graphics;
+                history.Add(eraser);
+                this.eraserPrev.Clear();
+            }
+
             this.origin = new PointF(e.X, e.Y);
 
             if (draw && shape != 11)
             {
                 // Creates shape and saves it's info to a global list of struct type.
                 Shape shape = new Shape();
-                shape.points = drawShape(this.graphics, this.pen, this.shape, this.origin);
+                shape.points = drawShapeAndReturnPoints(this.graphics, this.pen, this.shape, this.origin);
                 shape.color = this.pen.Color;
-                this.drawn_shapes.Add(shape);
-                
-
+                shape.pen = this.pen;
+                shape.graphics = this.graphics;
+                history.Add(shape);
             }
             else if (draw && shape == 11)
             {
@@ -200,34 +250,16 @@ namespace mandatory_pro_11_11_2023
                 text_.font = this.Font;
                 text_.brush = this.pen.Brush;
                 text_.point = this.origin;
-                this.placed_text.Add(text_);
+                text_.graphics = this.graphics;
+                history.Add(text_);
                 graphics.DrawString(text_.text, text_.font, text_.brush, text_.point);
-
             }
             pictureBox1.Refresh();
-            
+
         }
 
         #endregion
 
-        #region Picture Box Timers
-
-        // Eraser Timer
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            //if (
-            //    (pictureBox1.Width != this.Width) &&
-            //    (pictureBox1.Height != this.Height)
-            //)
-            //{
-            //    pictureBox1.Width = Form1.ActiveForm.Width;
-            //    pictureBox1.Height = Form1.ActiveForm.Height;
-            //    this.bitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-            //    this.graphics = Graphics.FromImage(this.bitmap);
-            //}
-        }
-
-        #endregion
 
         #region Buttons
         //Clear Button
@@ -246,6 +278,12 @@ namespace mandatory_pro_11_11_2023
             erase = false;
             shape = 11;
             pen.Brush = chooseColor(pen.Brush);
+        }
+
+        // Save button
+        private void button3_Click(object sender, EventArgs e)
+        {
+            pictureBox1.Image.Save("mypic.png", ImageFormat.Png);
         }
 
         #endregion
@@ -281,8 +319,7 @@ namespace mandatory_pro_11_11_2023
         private void clearAll()
         {
             graphics.Clear(pictureBox1.BackColor);
-            this.drawn_shapes.Clear();
-            this.placed_text.Clear();
+            this.history.Clear();
         }
 
         private String select_shape(int shape)
@@ -368,25 +405,36 @@ namespace mandatory_pro_11_11_2023
             return translated;
         }
 
-        private List<PointF> drawShape(Graphics graphics, Pen pen, int shape, PointF origin)
+        private void drawShape(Graphics graphics, Pen pen, int shape, PointF origin)
+        {
+            List<PointF> points = translateShape(loadPoints(select_shape(shape)), origin);
+            graphics.DrawLines(pen, points.ToArray());
+        }
+
+        private List<PointF> drawShapeAndReturnPoints(Graphics graphics, Pen pen, int shape, PointF origin)
         {
             List<PointF> points = translateShape(loadPoints(select_shape(shape)), origin);
             graphics.DrawLines(pen, points.ToArray());
             return points;
         }
 
-        private void redrawAll()
+        private void reDrawAllFromList()
         {
             graphics.Clear(pictureBox1.BackColor);
-            foreach (Shape shape in this.drawn_shapes)
+            foreach (Object obj in history)
             {
-                Pen p = new Pen(shape.color, this.pen.Width);
-               graphics.DrawLines(p, shape.points.ToArray());
-            }
-
-            foreach (Text_ text_ in this.placed_text)
-            {
-                graphics.DrawString(text_.text, text_.font, text_.brush, text_.point);
+                if (obj.GetType() == typeof(Shape))
+                {
+                    ((Shape)obj).redraw();
+                }
+                else if (obj.GetType() == typeof(Text_))
+                {
+                    ((Text_)obj).redraw();
+                }
+                else if (obj.GetType() == typeof(Eraser))
+                {
+                    ((Eraser)obj).redraw();
+                }
             }
         }
 
