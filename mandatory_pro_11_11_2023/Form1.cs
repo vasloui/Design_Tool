@@ -26,8 +26,25 @@ namespace mandatory_pro_11_11_2023
         bool erase;
         bool preview;
         PointF origin;
-        List<List<PointF>> drawn_shapes = new List<List<PointF>>();
         
+        private struct Shape
+        {
+            public List<PointF> points;
+            public Color color;
+        }
+
+        List<Shape> drawn_shapes = new List<Shape>();
+
+        private struct Text_
+        {
+            public String text;
+            public Font font;
+            public Brush brush;
+            public PointF point;
+        }
+
+        List<Text_> placed_text = new List<Text_>();
+
 
         #region Initializers
         public Form1()
@@ -152,11 +169,9 @@ namespace mandatory_pro_11_11_2023
             {
                 this.origin = new PointF(e.X, e.Y);
                 Pen p = new Pen(Color.Gray, 2);
-                Pen p2 = new Pen(pictureBox1.BackColor, 2);
                 drawShape(this.graphics, p, this.shape, this.origin);
                 pictureBox1.Refresh();
-                drawShape(this.graphics, p2, this.shape, this.origin);
-                redrawAllShapes();
+                redrawAll();
              }
         }
 
@@ -169,17 +184,28 @@ namespace mandatory_pro_11_11_2023
 
             if (draw && shape != 11)
             {
+                // Creates shape and saves it's info to a global list of struct type.
+                Shape shape = new Shape();
+                shape.points = drawShape(this.graphics, this.pen, this.shape, this.origin);
+                shape.color = this.pen.Color;
+                this.drawn_shapes.Add(shape);
                 
-                this.drawn_shapes.Add(drawShape(this.graphics, this.pen, shape, this.origin));
 
             }
             else if (draw && shape == 11)
             {
-                //Prints text
-                graphics.DrawString(text, Font, pen.Brush, this.origin);
+                //Prints text and saves it's info to a global list of struct type.
+                Text_ text_ = new Text_();
+                text_.text = this.text;
+                text_.font = this.Font;
+                text_.brush = this.pen.Brush;
+                text_.point = this.origin;
+                this.placed_text.Add(text_);
+                graphics.DrawString(text_.text, text_.font, text_.brush, text_.point);
+
             }
             pictureBox1.Refresh();
-            timer1.Enabled = false;
+            
         }
 
         #endregion
@@ -237,7 +263,7 @@ namespace mandatory_pro_11_11_2023
         {
             if (!(colorDialog1.ShowDialog() == DialogResult.Cancel))
             {
-                pen.Color = colorDialog1.Color;
+                this.pen.Color = colorDialog1.Color;
 
             }
         }
@@ -256,6 +282,7 @@ namespace mandatory_pro_11_11_2023
         {
             graphics.Clear(pictureBox1.BackColor);
             this.drawn_shapes.Clear();
+            this.placed_text.Clear();
         }
 
         private String select_shape(int shape)
@@ -348,14 +375,21 @@ namespace mandatory_pro_11_11_2023
             return points;
         }
 
-        private void redrawAllShapes()
+        private void redrawAll()
         {
             graphics.Clear(pictureBox1.BackColor);
-            foreach (List<PointF> shape in this.drawn_shapes)
+            foreach (Shape shape in this.drawn_shapes)
             {
-               graphics.DrawLines(pen, shape.ToArray());
+                Pen p = new Pen(shape.color, this.pen.Width);
+               graphics.DrawLines(p, shape.points.ToArray());
+            }
+
+            foreach (Text_ text_ in this.placed_text)
+            {
+                graphics.DrawString(text_.text, text_.font, text_.brush, text_.point);
             }
         }
+
 
         #endregion
     }
