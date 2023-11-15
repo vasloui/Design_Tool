@@ -10,6 +10,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
+using System.Drawing.Imaging;
 
 namespace mandatory_pro_11_11_2023
 {
@@ -22,8 +24,9 @@ namespace mandatory_pro_11_11_2023
         String text = "";
         bool draw;
         bool erase;
-        PointF eLocation;
-
+        bool preview;
+        PointF origin;
+        
 
         #region Initializers
         public Form1()
@@ -41,14 +44,13 @@ namespace mandatory_pro_11_11_2023
             pictureBox1.Image = bitmap;
             draw = false;
             erase = false;
-            //timer1.Enabled = true;
         }
         #endregion
 
         #region Menu
         private void shapeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            draw=true;
+            draw = true;
             erase = false;
         }
 
@@ -127,45 +129,59 @@ namespace mandatory_pro_11_11_2023
         #region Picture Box Mouse Events
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            
-        }
 
-        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
-        {
-            erase = false;
-            PointF origin = new PointF(e.X, e.Y);
-            if (draw && shape != 11)
-            {
-                drawShape(shape, origin);
-            }
-            else if (draw && shape == 11)
-            {
-                //Prints text
-                graphics.DrawString(text, Font, pen.Brush, origin);
-            }
-            pictureBox1.Refresh();
-            timer1.Enabled = false;
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             erase = !draw;
-            
+            preview = true;
+
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (erase )
+            if (erase)
             {
-                //timer1.Enabled = true;
                 PointF eLocation = e.Location;
                 graphics.DrawEllipse(eraser, eLocation.X, eLocation.Y, 10, 10);
                 pictureBox1.Refresh();
-
-            } else if (draw==true && shape != 0 && shape != 11)
+            }
+            else if (draw == true && preview == true && shape != 0 && shape != 11)
             {
+                this.origin = new PointF(e.X, e.Y);
+                Pen p = new Pen(Color.Gray, 2);
+                Pen p2 = new Pen(pictureBox1.BackColor, 2);
+                drawShape(this.graphics, p, this.shape, this.origin);
+                pictureBox1.Refresh();
+                drawShape(this.graphics, p2, this.shape, this.origin);
+                pictureBox1.Refresh();
+                
+            }
+        }
+
+        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
+        {
+            erase = false;
+            preview = false;
+
+            this.origin = new PointF(e.X, e.Y);
+
+            if (draw && shape != 11)
+            {
+                drawShape(this.graphics, this.pen, shape, this.origin);
+                //pictureBox1.Image.Save("mypic.png", ImageFormat.Png);
+                pictureBox1.Image.Save("canvas.png", ImageFormat.Png);
+
 
             }
+            else if (draw && shape == 11)
+            {
+                //Prints text
+                graphics.DrawString(text, Font, pen.Brush, this.origin);
+            }
+            pictureBox1.Refresh();
+            timer1.Enabled = false;
         }
 
         #endregion
@@ -198,7 +214,7 @@ namespace mandatory_pro_11_11_2023
             erase = false;
             pictureBox1.Refresh();
         }
-        
+
         //Text Button
         private void button2_Click(object sender, EventArgs e)
         {
@@ -233,7 +249,7 @@ namespace mandatory_pro_11_11_2023
             if (!(colorDialog1.ShowDialog() == DialogResult.Cancel))
             {
                 tool = new SolidBrush(colorDialog1.Color);
-                
+
                 //var color = new Color();
                 //color = colorDialog1.Color;
                 //brush = color;
@@ -292,10 +308,10 @@ namespace mandatory_pro_11_11_2023
         private List<PointF> loadPoints(String json_Name)
         {
             List<PointF> points = new List<PointF>();
-            String jsonString = File.ReadAllText(json_Name+".json");
+            String jsonString = File.ReadAllText(json_Name + ".json");
             points.Clear();
             points = JsonSerializer.Deserialize<List<PointF>>(jsonString);
-            
+
             return points;
         }
 
@@ -319,7 +335,7 @@ namespace mandatory_pro_11_11_2023
 
             List<PointF> translated = new List<PointF>();
             PointF center = getCenter(points);
-            float translationX= center.X - origin.X;
+            float translationX = center.X - origin.X;
             float translationY = center.Y - origin.Y;
 
             // Applies the translation to each point.
@@ -327,11 +343,11 @@ namespace mandatory_pro_11_11_2023
             {
                 translated.Add(new PointF(point.X - translationX, point.Y - translationY));
             }
-            
+
             return translated;
         }
 
-        private void drawShape(int shape, PointF origin)
+        private void drawShape(Graphics graphics, Pen pen, int shape, PointF origin)
         {
             List<PointF> points = translateShape(loadPoints(select_shape(shape)), origin);
             graphics.DrawLines(pen, points.ToArray());
