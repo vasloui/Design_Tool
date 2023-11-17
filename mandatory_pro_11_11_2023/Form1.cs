@@ -260,7 +260,6 @@ namespace mandatory_pro_11_11_2023
 
         #endregion
 
-
         #region Buttons
         //Clear Button
         private void button1_Click(object sender, EventArgs e)
@@ -286,6 +285,38 @@ namespace mandatory_pro_11_11_2023
             pictureBox1.Image.Save("mypic.png", ImageFormat.Png);
         }
 
+        // Move right button
+        private void button6_Click(object sender, EventArgs e)
+        {
+            applyOffset_X_ForLast(15);
+            reDrawAllFromList();
+            pictureBox1.Refresh();
+        }
+
+        // Move up button
+        private void button7_Click(object sender, EventArgs e)
+        {
+            applyOffset_Y_ForLast(-15);
+            reDrawAllFromList();
+            pictureBox1.Refresh();
+        }
+
+        // Move left button
+        private void button8_Click(object sender, EventArgs e)
+        {
+            applyOffset_X_ForLast(-15);
+            reDrawAllFromList();
+            pictureBox1.Refresh();
+        }
+
+        // Move down button
+        private void button9_Click(object sender, EventArgs e)
+        {
+            applyOffset_Y_ForLast(15);
+            reDrawAllFromList();
+            pictureBox1.Refresh();
+        }
+
         #endregion
 
         #region Text Fields
@@ -295,6 +326,7 @@ namespace mandatory_pro_11_11_2023
             text = textBox1.Text;
         }
         #endregion
+
 
         #region Helper Functions
         private void chooseColor()
@@ -315,11 +347,11 @@ namespace mandatory_pro_11_11_2023
             return tool;
         }
 
-
         private void clearAll()
         {
             graphics.Clear(pictureBox1.BackColor);
             this.history.Clear();
+            textBox1.Clear();
         }
 
         private String select_shape(int shape)
@@ -418,14 +450,86 @@ namespace mandatory_pro_11_11_2023
             return points;
         }
 
+        //private List<Object> moveShapeX(List<Object> arr, int step)
+        //{
+        //    List<Object> tempArr = arr;
+        //    if (arr.Count > 0 && arr[arr.Count - 1].GetType() == typeof(Shape))
+        //    {
+        //        //List<PointF> points = ((Shape)arr[arr.Count - 1]).points;
+        //        Shape shape = (Shape)arr[arr.Count - 1];
+        //        tempArr.RemoveAt(tempArr.Count - 1);
+
+
+        //        List<PointF> translated = new List<PointF>();
+        //        foreach (PointF point in shape.points)
+        //        {
+        //            translated.Add(new PointF(point.X + step, point.Y));
+        //        }
+
+        //        shape.points.Clear();
+        //        shape.points.AddRange(translated);
+        //        tempArr.Add((Object)shape);
+        //        //shape.redraw();
+        //    }
+        //    return tempArr;
+        //}
+
+        private void applyOffset_X_ForLast(int offset)
+        { 
+            var last = history.LastOrDefault();
+            if (last != null)
+            {
+                if (last.GetType() == typeof(Shape))
+                {
+                    Shape shape = (Shape)last;
+                    List<PointF> translated = new List<PointF>();
+                    foreach (PointF point in shape.points)
+                    {
+                        translated.Add(new PointF(point.X + offset, point.Y));
+                    }
+                    shape.points.Clear();
+                    shape.points.AddRange(translated);
+                    history.RemoveAt(history.Count - 1);
+                    history.Add((Object)shape);
+                }
+            }
+
+        }
+
+        private void applyOffset_Y_ForLast(int offset)
+        {
+            var last = history.LastOrDefault();
+            if (last != null)
+            {
+                if (last.GetType() == typeof(Shape))
+                {
+                    Shape shape = (Shape)last;
+                    List<PointF> translated = new List<PointF>();
+                    foreach (PointF point in shape.points)
+                    {
+                        translated.Add(new PointF(point.X, point.Y + offset));
+                    }
+                    shape.points.Clear();
+                    shape.points.AddRange(translated);
+                    history.RemoveAt(history.Count - 1);
+                    history.Add((Object)shape);
+                }
+            }
+
+        }
+
         private void reDrawAllFromList()
         {
             graphics.Clear(pictureBox1.BackColor);
             foreach (Object obj in history)
             {
                 if (obj.GetType() == typeof(Shape))
+                
                 {
                     ((Shape)obj).redraw();
+                    //Pen p = new Pen((Shape)obj).color, this.pen.Width);
+                    //graphics.DrawLines(p, points.ToArray());
+
                 }
                 else if (obj.GetType() == typeof(Text_))
                 {
@@ -437,7 +541,6 @@ namespace mandatory_pro_11_11_2023
                 }
             }
         }
-
 
         #endregion
     }
