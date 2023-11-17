@@ -450,30 +450,6 @@ namespace mandatory_pro_11_11_2023
             return points;
         }
 
-        //private List<Object> moveShapeX(List<Object> arr, int step)
-        //{
-        //    List<Object> tempArr = arr;
-        //    if (arr.Count > 0 && arr[arr.Count - 1].GetType() == typeof(Shape))
-        //    {
-        //        //List<PointF> points = ((Shape)arr[arr.Count - 1]).points;
-        //        Shape shape = (Shape)arr[arr.Count - 1];
-        //        tempArr.RemoveAt(tempArr.Count - 1);
-
-
-        //        List<PointF> translated = new List<PointF>();
-        //        foreach (PointF point in shape.points)
-        //        {
-        //            translated.Add(new PointF(point.X + step, point.Y));
-        //        }
-
-        //        shape.points.Clear();
-        //        shape.points.AddRange(translated);
-        //        tempArr.Add((Object)shape);
-        //        //shape.redraw();
-        //    }
-        //    return tempArr;
-        //}
-
         private void applyOffset_X_ForLast(int offset)
         { 
             var last = history.LastOrDefault();
@@ -527,9 +503,6 @@ namespace mandatory_pro_11_11_2023
                 
                 {
                     ((Shape)obj).redraw();
-                    //Pen p = new Pen((Shape)obj).color, this.pen.Width);
-                    //graphics.DrawLines(p, points.ToArray());
-
                 }
                 else if (obj.GetType() == typeof(Text_))
                 {
